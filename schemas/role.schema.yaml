@@ -1,0 +1,331 @@
+## =============================================================================
+## TMDL - TeamMate Description Language
+## Schema para Roles Tipo Reutilizables v1.0
+## =============================================================================
+
+$schema: "http://json-schema.org/draft-07/schema#"
+$id: "https://tmdl.io/schemas/role.schema.yaml"
+title: "TMDL Role Schema"
+description: "Schema para definir roles tipo reutilizables"
+version: "1.0.0"
+
+type: object
+required:
+  - role_type
+  - metadata
+  - definition
+
+properties:
+
+  ## ===========================================================================
+  ## IDENTIFICACIÓN DEL TIPO DE ROL
+  ## ===========================================================================
+  role_type:
+    type: object
+    required:
+      - id
+      - name
+      - category
+    properties:
+      id:
+        type: string
+        description: "Identificador único del rol tipo"
+        pattern: "^[a-z][a-z0-9_-]*$"
+        examples:
+          - "analyst"
+          - "researcher"
+          - "devils-advocate"
+      name:
+        type: string
+        description: "Nombre legible del rol"
+        examples:
+          - "Analista"
+          - "Investigador"
+          - "Abogado del Diablo"
+      category:
+        type: string
+        description: "Categoría del rol"
+        enum:
+          - functional     # Basado en función (analyst, designer, etc.)
+          - cognitive      # Basado en estilo de pensamiento
+          - hybrid         # Combina función y estilo
+      icon:
+        type: string
+        description: "Emoji o icono representativo"
+        examples:
+          - "📊"
+          - "🔍"
+          - "😈"
+
+  ## ===========================================================================
+  ## METADATA DEL ROL TIPO
+  ## ===========================================================================
+  metadata:
+    type: object
+    required:
+      - version
+      - author
+    properties:
+      version:
+        type: string
+        pattern: "^[0-9]+\\.[0-9]+(\\.[0-9]+)?$"
+      author:
+        type: string
+      description:
+        type: string
+        description: "Descripción del propósito de este rol tipo"
+      use_cases:
+        type: array
+        description: "Casos de uso recomendados"
+        items:
+          type: string
+      not_suitable_for:
+        type: array
+        description: "Casos donde NO es recomendable"
+        items:
+          type: string
+      compatible_with:
+        type: array
+        description: "Roles con los que combina bien en un equipo"
+        items:
+          type: string
+      complementary_to:
+        type: array
+        description: "Roles que complementa (cubren debilidades mutuas)"
+        items:
+          type: string
+
+  ## ===========================================================================
+  ## DEFINICIÓN DEL ROL
+  ## Valores por defecto que hereda un TeamMate al usar extends
+  ## ===========================================================================
+  definition:
+    type: object
+    description: "Definición completa del rol tipo"
+    properties:
+
+      ## -----------------------------------------------------------------------
+      ## DESCRIPCIÓN GENERAL
+      ## -----------------------------------------------------------------------
+      summary:
+        type: string
+        description: "Resumen de una línea del rol"
+      detailed_description:
+        type: string
+        description: "Descripción detallada del rol y su propósito"
+
+      ## -----------------------------------------------------------------------
+      ## PERSONALIDAD POR DEFECTO
+      ## -----------------------------------------------------------------------
+      default_personality:
+        type: object
+        properties:
+          traits:
+            type: array
+            description: "Rasgos de personalidad característicos"
+            items:
+              type: string
+            examples:
+              - ["meticuloso", "curioso", "escéptico", "orientado a datos"]
+          tone:
+            type: string
+            enum: [formal, professional, friendly, casual, enthusiastic, neutral]
+          cognitive_style:
+            type: string
+            enum: [devils_advocate, optimist, pragmatist, visionary, analytical, creative, balanced]
+          communication_patterns:
+            type: array
+            description: "Patrones de comunicación típicos"
+            items:
+              type: string
+            examples:
+              - "Siempre pide datos que respalden afirmaciones"
+              - "Hace preguntas antes de opinar"
+
+      ## -----------------------------------------------------------------------
+      ## EXPERTISE POR DEFECTO
+      ## -----------------------------------------------------------------------
+      default_expertise:
+        type: array
+        description: "Áreas de expertise típicas del rol"
+        items:
+          type: object
+          properties:
+            domain:
+              type: string
+            level:
+              type: string
+              enum: [basic, intermediate, advanced, expert]
+            typical_tasks:
+              type: array
+              items:
+                type: string
+
+      ## -----------------------------------------------------------------------
+      ## RESPONSABILIDADES TÍPICAS
+      ## -----------------------------------------------------------------------
+      typical_responsibilities:
+        type: array
+        description: "Responsabilidades que suele asumir este rol"
+        items:
+          type: string
+
+      ## -----------------------------------------------------------------------
+      ## BOUNDARIES POR DEFECTO
+      ## -----------------------------------------------------------------------
+      default_boundaries:
+        type: object
+        properties:
+          can_do:
+            type: array
+            items:
+              type: string
+          cannot_do:
+            type: array
+            items:
+              type: string
+          should_delegate:
+            type: array
+            description: "Tareas que debería delegar a otros roles"
+            items:
+              type: object
+              properties:
+                task:
+                  type: string
+                delegate_to:
+                  type: string
+                  description: "Rol recomendado"
+
+      ## -----------------------------------------------------------------------
+      ## COLABORACIÓN POR DEFECTO
+      ## -----------------------------------------------------------------------
+      default_collaboration:
+        type: object
+        properties:
+          interaction_mode:
+            type: string
+            enum: [reactive, proactive, balanced]
+          initiative_level:
+            type: string
+            enum: [low, medium, high]
+          feedback_style:
+            type: string
+            enum: [direct, diplomatic, socratic, constructive]
+          conflict_approach:
+            type: string
+            enum: [avoid, accommodate, compromise, collaborate, compete]
+
+      ## -----------------------------------------------------------------------
+      ## PROTOCOLOS POR DEFECTO
+      ## -----------------------------------------------------------------------
+      default_protocols:
+        type: object
+        properties:
+          on_task_assignment:
+            type: string
+          on_review_request:
+            type: string
+          on_disagreement:
+            type: string
+          on_blocked:
+            type: string
+
+      ## -----------------------------------------------------------------------
+      ## TOOLS POR DEFECTO
+      ## Comandos típicos que incluye este rol
+      ## -----------------------------------------------------------------------
+      default_tools:
+        type: object
+        properties:
+          commands:
+            type: array
+            items:
+              type: object
+              required:
+                - name
+                - description
+                - prompt
+              properties:
+                name:
+                  type: string
+                display_name:
+                  type: string
+                description:
+                  type: string
+                prompt:
+                  type: string
+          decorators:
+            type: array
+            items:
+              type: object
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+                prompt:
+                  type: string
+
+      ## -----------------------------------------------------------------------
+      ## BEHAVIORS POR DEFECTO
+      ## -----------------------------------------------------------------------
+      default_behaviors:
+        type: object
+        properties:
+          on_greeting:
+            type: string
+          on_help:
+            type: string
+          guardrails:
+            type: array
+            items:
+              type: string
+
+      ## -----------------------------------------------------------------------
+      ## FRASES Y PATRONES CARACTERÍSTICOS
+      ## -----------------------------------------------------------------------
+      signature_phrases:
+        type: array
+        description: "Frases o muletillas características del rol"
+        items:
+          type: string
+        examples:
+          - "¿Tenemos datos que respalden esto?"
+          - "Interesante... déjame investigar"
+          - "He encontrado que..."
+
+      ## -----------------------------------------------------------------------
+      ## PREGUNTAS QUE SUELE HACER
+      ## -----------------------------------------------------------------------
+      typical_questions:
+        type: array
+        description: "Preguntas que este rol suele plantear"
+        items:
+          type: string
+        examples:
+          - "¿Cuál es la fuente de esta información?"
+          - "¿Hemos considerado la alternativa de...?"
+
+      ## -----------------------------------------------------------------------
+      ## OUTPUTS TÍPICOS
+      ## -----------------------------------------------------------------------
+      typical_outputs:
+        type: array
+        description: "Tipos de entregables que produce"
+        items:
+          type: object
+          properties:
+            type:
+              type: string
+              examples:
+                - "Informe de análisis"
+                - "Matriz DAFO"
+                - "Estudio de mercado"
+            format:
+              type: string
+              examples:
+                - "documento estructurado"
+                - "tabla comparativa"
+                - "lista priorizada"
+            description:
+              type: string

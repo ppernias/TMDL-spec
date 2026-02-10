@@ -1,0 +1,119 @@
+## =============================================================================
+## TMDL Schema - Section: KNOWLEDGE
+## External content injectable into the LLM
+## =============================================================================
+
+knowledge:
+  type: array
+  description: |
+    List of documents and external content injected into the LLM context.
+    For structured project information (team, timeline, resources),
+    use the `context` section. Knowledge is for longer or domain content.
+
+  items:
+    type: object
+    required:
+      - id
+      - source
+    properties:
+      
+      id:
+        type: string
+        description: "Unique knowledge identifier"
+        pattern: "^[a-z][a-z0-9_-]*$"
+        examples:
+          - "domain-tourism"
+          - "methodology-swot"
+          - "client-brief"
+
+      name:
+        type: string
+        description: "Descriptive name"
+        maxLength: 200
+        examples:
+          - "Tourism sector knowledge"
+          - "SWOT methodology guide"
+
+      description:
+        type: string
+        description: "Brief content description"
+        maxLength: 500
+
+      source:
+        type: string
+        description: "Path to file with content (relative to YAML)"
+        pattern: "^.+\\.(md|txt|yaml)$"
+        examples:
+          - "knowledge/tourism.md"
+          - "knowledge/swot-methodology.md"
+          - "docs/client-brief.md"
+
+      type:
+        type: string
+        description: "Knowledge type (for organization)"
+        enum:
+          - domain        # Domain/sector knowledge
+          - methodology   # Methodologies and frameworks
+          - reference     # Reference material
+          - guidelines    # Guides and standards
+          - examples      # Examples and cases
+          - other
+        default: domain
+
+      inject:
+        type: string
+        description: |
+          When to inject this knowledge into context.
+        enum:
+          - always        # Always present
+          - on_demand     # Only when requested or relevant
+          - startup       # Only at conversation start
+        default: always
+
+      priority:
+        type: string
+        description: |
+          Priority if there's a context limit.
+          Higher priority content is kept if trimming is needed.
+        enum:
+          - critical      # Never trim
+          - high          # Only trim if necessary
+          - medium        # Trim if context pressure
+          - low           # Trim first
+        default: medium
+
+      tags:
+        type: array
+        description: "Tags for search and filtering"
+        items:
+          type: string
+        examples:
+          - ["tourism", "sustainability", "coast"]
+          - ["methodology", "analysis", "SWOT"]
+
+  examples:
+    - id: "domain-tourism"
+      name: "Tourism sector knowledge"
+      description: "Context about sustainable tourism in Spain"
+      source: "knowledge/tourism.md"
+      type: domain
+      inject: always
+      priority: high
+      tags: ["tourism", "sustainability"]
+
+    - id: "methodology-swot"
+      name: "SWOT methodology guide"
+      description: "How to perform a SWOT analysis correctly"
+      source: "knowledge/swot-methodology.md"
+      type: methodology
+      inject: on_demand
+      priority: medium
+      tags: ["methodology", "SWOT", "analysis"]
+
+    - id: "client-requirements"
+      name: "Client brief"
+      description: "Client requirements and expectations"
+      source: "docs/client-brief.md"
+      type: reference
+      inject: always
+      priority: critical
