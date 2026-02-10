@@ -1,0 +1,222 @@
+## =============================================================================
+## TMDL Schema - Section: ROLE
+## TeamMate function and responsibilities within the team
+## =============================================================================
+
+role:
+  type: object
+  description: |
+    Defines the TeamMate's functional role within the team. Specifies
+    what type of work they do, areas of expertise, responsibilities,
+    and limits of action.
+  
+  required:
+    - type
+
+  properties:
+    
+    ## -------------------------------------------------------------------------
+    ## ROLE TYPE INHERITANCE
+    ## -------------------------------------------------------------------------
+    
+    extends:
+      type: string
+      description: |
+        Reference to a reusable role type file. If specified, the TeamMate
+        inherits the characteristics defined in that role type and can
+        override specific fields.
+      examples:
+        - "roles/analyst.yaml"
+        - "roles/researcher.yaml"
+        - "roles/designer.yaml"
+
+    ## -------------------------------------------------------------------------
+    ## ROLE TYPE
+    ## -------------------------------------------------------------------------
+    
+    type:
+      type: string
+      description: |
+        Primary role type the TeamMate performs in the team.
+        Determines their fundamental function.
+      enum:
+        - analyst        # Analyzes data, market, competition, viability
+        - researcher     # Investigates sources, state of the art, bibliography
+        - designer       # Designs experiences, interfaces, prototypes
+        - strategist     # Defines strategy, objectives, planning
+        - creator        # Generates content, texts, creatives
+        - coordinator    # Coordinates tasks, timing, communication
+        - critic         # Reviews, questions, improves proposals
+        - documentalist  # Documents, organizes, maintains memory
+        - generalist     # General-purpose role, no specialization
+        - custom         # Custom role (use type_custom)
+
+    type_custom:
+      type: string
+      description: |
+        Custom role name when type is 'custom'.
+        Allows defining specific roles not covered in the enum.
+      minLength: 2
+      maxLength: 50
+      examples:
+        - "Legal Advisor"
+        - "Quality Assurance"
+        - "Customer Voice"
+
+    ## -------------------------------------------------------------------------
+    ## COGNITIVE STYLE
+    ## -------------------------------------------------------------------------
+    
+    cognitive_style:
+      type: string
+      description: |
+        TeamMate's predominant thinking style. Influences how they
+        approach problems, evaluate options, and contribute to the team.
+        Complements personality with a specific cognitive approach.
+      enum:
+        - analytical       # Methodical, data-driven, logical
+        - creative         # Imaginative, seeks original solutions
+        - pragmatist       # Practical, focused on feasibility
+        - visionary        # Thinks big, long-term, disruptive
+        - optimist         # Sees opportunities, motivating
+        - devils_advocate  # Questions, seeks weaknesses, skeptical
+        - balanced         # Balance between different styles
+      default: balanced
+
+    ## -------------------------------------------------------------------------
+    ## EXPERTISE
+    ## -------------------------------------------------------------------------
+    
+    expertise:
+      type: array
+      description: |
+        TeamMate's specialized knowledge areas. Defines what topics
+        they have competence in and at what level.
+      items:
+        type: object
+        required:
+          - domain
+        properties:
+          domain:
+            type: string
+            description: "Area of knowledge or skill"
+            minLength: 2
+            maxLength: 100
+            examples:
+              - "SWOT Analysis"
+              - "Market Research"
+              - "UX Design"
+              - "Digital Marketing"
+          level:
+            type: string
+            description: |
+              Competence level in this area.
+            enum:
+              - basic          # Basic knowledge, can help with simple tasks
+              - intermediate   # Competent, can work with supervision
+              - advanced       # Highly competent, can work autonomously
+              - expert         # Expert, can guide others and solve complex problems
+            default: intermediate
+          description:
+            type: string
+            description: |
+              Specific description of what they can do in this area.
+              Helps the LLM understand the scope of expertise.
+            maxLength: 300
+            examples:
+              - "Specialist in identifying strengths, weaknesses, opportunities and threats in tourism projects"
+              - "Masters search techniques in academic databases and source evaluation"
+      minItems: 1
+      maxItems: 15
+
+    ## -------------------------------------------------------------------------
+    ## RESPONSIBILITIES
+    ## -------------------------------------------------------------------------
+    
+    responsibilities:
+      type: array
+      description: |
+        List of primary responsibilities the TeamMate assumes
+        within the team. Defines what tasks and functions they handle.
+      items:
+        type: string
+        minLength: 10
+        maxLength: 200
+      minItems: 1
+      maxItems: 20
+      examples:
+        - "Perform market and competition analysis"
+        - "Develop SWOT analyses"
+        - "Validate team hypotheses with data"
+        - "Identify trends relevant to the project"
+        - "Review deliverable quality before presentation"
+
+    ## -------------------------------------------------------------------------
+    ## ACTION LIMITS
+    ## -------------------------------------------------------------------------
+    
+    boundaries:
+      type: object
+      description: |
+        Defines the TeamMate's action limits: what they can do,
+        what they must not do, and what situations they should delegate.
+        Important to avoid overlap and define clear responsibilities.
+      properties:
+        
+        can_do:
+          type: array
+          description: |
+            List of actions the TeamMate CAN and SHOULD perform.
+            Positively defines their scope of action.
+          items:
+            type: string
+            maxLength: 200
+          maxItems: 20
+          examples:
+            - "Analyze provided data and information"
+            - "Generate structured reports"
+            - "Challenge unsupported claims"
+            - "Propose evidence-based hypotheses"
+
+        cannot_do:
+          type: array
+          description: |
+            List of actions the TeamMate MUST NOT perform.
+            Defines clear restrictions and limits.
+          items:
+            type: string
+            maxLength: 200
+          maxItems: 20
+          examples:
+            - "Fabricate data or statistics"
+            - "Make final decisions for the team"
+            - "Ignore information that contradicts their analyses"
+            - "Present opinions as facts"
+
+        defers_to:
+          type: array
+          description: |
+            Situations the TeamMate should delegate to other roles
+            or team members. Defines collaboration between roles.
+          items:
+            type: object
+            required:
+              - situation
+              - delegate_to
+            properties:
+              situation:
+                type: string
+                description: "Situation or task to delegate"
+                maxLength: 200
+              delegate_to:
+                type: string
+                description: "Role or person to delegate to"
+                maxLength: 100
+          maxItems: 10
+          examples:
+            - situation: "Visual presentation design"
+              delegate_to: "designer"
+            - situation: "Creative content writing"
+              delegate_to: "creator"
+            - situation: "Final strategic decisions"
+              delegate_to: "strategist or human team"

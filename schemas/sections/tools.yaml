@@ -1,0 +1,253 @@
+## =============================================================================
+## TMDL Schema - Section: TOOLS
+## Base tools for collaborative teamwork
+## =============================================================================
+
+tools:
+  type: object
+  description: |
+    Tools every TeamMate has available for team collaboration.
+    Role-specific commands are defined in the `role` section.
+
+  properties:
+    
+    ## -------------------------------------------------------------------------
+    ## COMMANDS - Base team commands (/command)
+    ## -------------------------------------------------------------------------
+    
+    commands:
+      type: array
+      description: |
+        Commands invokable with /command. These are base commands that
+        every TeamMate has for coordination and collaboration.
+        Role-specific commands are defined in `role.commands`.
+      items:
+        type: object
+        required:
+          - name
+          - description
+          - prompt
+        properties:
+          name:
+            type: string
+            description: "Command name (without /)"
+            pattern: "^[a-z][a-z0-9_]*$"
+          display_name:
+            type: string
+            description: "Human-readable name to display"
+          description:
+            type: string
+            description: "What this command does"
+          prompt:
+            type: string
+            description: "Instructions to execute the command"
+          parameters:
+            type: array
+            description: "Parameters the command accepts"
+            items:
+              type: object
+              properties:
+                name:
+                  type: string
+                type:
+                  type: string
+                  enum: [string, number, boolean, list]
+                required:
+                  type: boolean
+                default:
+                  description: "Default value"
+                description:
+                  type: string
+      
+      default:
+        - name: "status"
+          display_name: "Status"
+          description: "Summary of my current work and pending tasks"
+          prompt: |
+            Provide a concise summary of:
+            1. What I'm currently working on
+            2. What I've recently completed
+            3. What I have pending
+            4. If anything is blocked or needs attention
+
+        - name: "handoff"
+          display_name: "Handoff"
+          description: "Prepare work handoff to another team member"
+          prompt: |
+            Prepare a work handoff that includes:
+            1. Context: what was being done and why
+            2. Current state: where the work left off
+            3. Next steps: what remains to be done
+            4. Relevant information: data, sources, decisions made
+            5. Warnings: potential problems or considerations
+          parameters:
+            - name: to
+              type: string
+              required: false
+              description: "Handoff recipient"
+            - name: task
+              type: string
+              required: false
+              description: "Specific task to hand off"
+
+        - name: "summarize"
+          display_name: "Summarize"
+          description: "Summarize conversation or work to share with team"
+          prompt: |
+            Generate a structured summary including:
+            1. Main points discussed or worked on
+            2. Decisions made
+            3. Pending actions
+            4. Open questions
+          parameters:
+            - name: scope
+              type: string
+              required: false
+              description: "What to summarize (conversation, task, day)"
+              default: "conversation"
+
+        - name: "blockers"
+          display_name: "Blockers"
+          description: "List what's preventing progress on current work"
+          prompt: |
+            Identify and list current blockers:
+            1. What information is missing
+            2. What decisions are pending
+            3. What external dependencies exist
+            4. Proposals to unblock each point
+
+        - name: "review"
+          display_name: "Review"
+          description: "Request review of something I've prepared"
+          prompt: |
+            Present work for review:
+            1. What it is and what it's for
+            2. Points I'd like reviewed
+            3. Doubts or decisions I made that need validation
+            4. Requested format for feedback
+          parameters:
+            - name: item
+              type: string
+              required: false
+              description: "What to review"
+
+        - name: "help"
+          display_name: "Help"
+          description: "Show what I can do and how to work with me"
+          prompt: |
+            Explain clearly and concisely:
+            1. Who I am and my role
+            2. How I can help (my capabilities)
+            3. What I can't or shouldn't do (my limits)
+            4. Available commands and how to use them
+            5. How to get the most out of working with me
+
+    ## -------------------------------------------------------------------------
+    ## OPTIONS - Global modifiers (/option value)
+    ## -------------------------------------------------------------------------
+    
+    options:
+      type: array
+      description: |
+        Global modifiers that adjust behavior.
+        Invoked with /option value.
+      items:
+        type: object
+        required:
+          - name
+          - prompt
+        properties:
+          name:
+            type: string
+            pattern: "^[a-z][a-z0-9_]*$"
+          description:
+            type: string
+          prompt:
+            type: string
+          values:
+            type: array
+            description: "Allowed values (if enum)"
+            items:
+              type: string
+          default:
+            type: string
+            description: "Default value"
+      
+      default:
+        - name: "lang"
+          description: "Change response language"
+          prompt: "Respond in the indicated language"
+          values: ["en", "es", "fr", "de", "pt", "it"]
+          default: "en"
+
+        - name: "format"
+          description: "Output format"
+          prompt: |
+            Adjust output format:
+            - markdown: use Markdown format with headers, lists, etc.
+            - plain: plain text without formatting
+            - structured: use clear structure with numbered sections
+          values: ["markdown", "plain", "structured"]
+          default: "markdown"
+
+    ## -------------------------------------------------------------------------
+    ## DECORATORS - Style modifiers (+++decorator)
+    ## -------------------------------------------------------------------------
+    
+    decorators:
+      type: array
+      description: |
+        Style modifiers applied to the next response.
+        Invoked with +++decorator before or after the message.
+      items:
+        type: object
+        required:
+          - name
+          - prompt
+        properties:
+          name:
+            type: string
+            pattern: "^[a-z][a-z0-9_]*$"
+          description:
+            type: string
+          prompt:
+            type: string
+      
+      default:
+        - name: "brief"
+          description: "Concise response"
+          prompt: "Respond very concisely, maximum 3-5 key points. No introductions or conclusions."
+
+        - name: "detailed"
+          description: "Extended response"
+          prompt: "Provide a detailed and exhaustive response, with explanations and examples where useful."
+
+        - name: "bullets"
+          description: "List format"
+          prompt: "Structure the entire response in bulleted lists. Avoid long paragraphs."
+
+        - name: "formal"
+          description: "More formal tone"
+          prompt: "Use a formal and professional tone. Avoid colloquialisms and informal expressions."
+
+    ## -------------------------------------------------------------------------
+    ## ROLE COMMANDS (defined in role, documented here)
+    ## -------------------------------------------------------------------------
+    
+    role_commands:
+      type: array
+      description: |
+        Role-specific commands are defined in the `role.commands` section.
+        This field is for reference and documentation only.
+        Example: an analyst might have /swot, /trends, /compare.
+      items:
+        type: object
+        properties:
+          name:
+            type: string
+          description:
+            type: string
+          prompt:
+            type: string
+          parameters:
+            type: array

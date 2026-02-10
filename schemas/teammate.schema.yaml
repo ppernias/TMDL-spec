@@ -1,0 +1,752 @@
+## =============================================================================
+## TMDL - TeamMate Description Language
+## Main Consolidated Schema v1.1
+## =============================================================================
+## This file is generated/consolidated from sections/*.yaml
+## For development, edit files in sections/
+## =============================================================================
+
+$schema: "http://json-schema.org/draft-07/schema#"
+$id: "https://tmdl.io/schemas/teammate.schema.yaml"
+title: "TMDL TeamMate Schema"
+description: |
+  Complete schema for defining a TeamMate - an LLM-based virtual team member
+  that collaborates with human teams on projects.
+version: "1.1.0"
+
+type: object
+
+required:
+  - tmdl_version
+  - metadata
+  - identity
+  - role
+
+properties:
+
+  ## ===========================================================================
+  ## LANGUAGE VERSION
+  ## ===========================================================================
+  
+  tmdl_version:
+    type: string
+    description: "TMDL version used in this definition"
+    pattern: "^[0-9]+\\.[0-9]+$"
+    examples:
+      - "1.0"
+      - "1.1"
+
+  ## ===========================================================================
+  ## SECTION 1: METADATA
+  ## Administrative and cataloging information
+  ## ===========================================================================
+  
+  metadata:
+    type: object
+    description: |
+      Administrative information for the TeamMate for cataloging,
+      search, and management. Fields inspired by Dublin Core and IEEE LOM.
+    
+    required:
+      - id
+      - name
+      - version
+      - author
+
+    properties:
+      
+      id:
+        type: string
+        description: "Unique TeamMate identifier"
+        pattern: "^[a-z][a-z0-9_-]*$"
+        minLength: 3
+        maxLength: 64
+
+      name:
+        type: string
+        description: "Human-readable descriptive name"
+        minLength: 2
+        maxLength: 100
+
+      description:
+        type: string
+        description: "Brief description of purpose"
+        maxLength: 500
+
+      version:
+        type: string
+        description: "Version (semantic: MAJOR.MINOR or MAJOR.MINOR.PATCH)"
+        pattern: "^[0-9]+\\.[0-9]+(\\.[0-9]+)?$"
+
+      status:
+        type: string
+        enum: [draft, review, published, deprecated, archived]
+        default: draft
+
+      author:
+        type: string
+        description: "Primary creator"
+        minLength: 2
+        maxLength: 100
+
+      contributors:
+        type: array
+        items:
+          type: object
+          properties:
+            name:
+              type: string
+            role:
+              type: string
+              enum: [author, content_provider, validator, editor, technical]
+            date:
+              type: string
+              format: date
+
+      created:
+        type: string
+        format: date
+
+      updated:
+        type: string
+        format: date
+
+      history:
+        type: array
+        items:
+          type: object
+          required: [date, changes]
+          properties:
+            date:
+              type: string
+              format: date
+            version:
+              type: string
+            changes:
+              type: string
+            author:
+              type: string
+
+      language:
+        type: string
+        pattern: "^[a-z]{2}(-[A-Z]{2})?$"
+        default: "en"
+
+      tags:
+        type: array
+        items:
+          type: string
+        minItems: 1
+        maxItems: 20
+
+      context:
+        type: string
+        enum: [academic, professional, training, research, personal, other]
+        default: academic
+
+      intended_audience:
+        type: array
+        items:
+          type: string
+          enum: [students, teachers, professionals, researchers, entrepreneurs, managers, general_public]
+        default: [students]
+
+      license:
+        type: string
+
+      rights_description:
+        type: string
+        maxLength: 500
+
+      related:
+        type: array
+        items:
+          type: object
+          properties:
+            type:
+              type: string
+              enum: [is_version_of, has_version, is_based_on, is_required_by, requires, is_part_of, has_part, references, is_referenced_by]
+            target:
+              type: string
+            description:
+              type: string
+
+  ## ===========================================================================
+  ## SECTION 2: IDENTITY
+  ## Personality and communication style
+  ## ===========================================================================
+  
+  identity:
+    type: object
+    description: |
+      Defines the TeamMate's identity, personality, and communication style.
+    
+    required:
+      - display_name
+      - personality
+
+    properties:
+      
+      display_name:
+        type: string
+        description: "Name used when presenting itself"
+        minLength: 1
+        maxLength: 50
+
+      avatar:
+        type: string
+        description: "URL or path to TeamMate image"
+
+      personality:
+        type: string
+        description: "Narrative description of personality"
+        minLength: 100
+        maxLength: 2000
+
+      background:
+        type: string
+        description: "Fictional history or professional context"
+        maxLength: 1000
+
+      communication_style:
+        type: object
+        properties:
+          verbosity:
+            type: string
+            enum: [concise, balanced, detailed]
+            default: balanced
+          tone:
+            type: string
+            enum: [formal, professional, neutral, friendly, casual, enthusiastic]
+            default: professional
+          emoji_use:
+            type: boolean
+            default: false
+
+      quirks:
+        type: array
+        description: "Distinctive traits and catchphrases"
+        items:
+          type: string
+          minLength: 10
+          maxLength: 200
+        maxItems: 10
+
+  ## ===========================================================================
+  ## SECTION 3: ROLE
+  ## Function and responsibilities
+  ## ===========================================================================
+  
+  role:
+    type: object
+    description: |
+      Defines the TeamMate's functional role within the team.
+    
+    required:
+      - type
+
+    properties:
+      
+      extends:
+        type: string
+        description: "Reference to reusable role type"
+
+      type:
+        type: string
+        enum: [analyst, researcher, designer, strategist, creator, coordinator, critic, documentalist, generalist, custom]
+
+      type_custom:
+        type: string
+        description: "Role name if type is 'custom'"
+        minLength: 2
+        maxLength: 50
+
+      cognitive_style:
+        type: string
+        enum: [analytical, creative, pragmatist, visionary, optimist, devils_advocate, balanced]
+        default: balanced
+
+      expertise:
+        type: array
+        items:
+          type: object
+          required: [domain]
+          properties:
+            domain:
+              type: string
+              maxLength: 100
+            level:
+              type: string
+              enum: [basic, intermediate, advanced, expert]
+              default: intermediate
+            description:
+              type: string
+              maxLength: 300
+        minItems: 1
+        maxItems: 15
+
+      responsibilities:
+        type: array
+        items:
+          type: string
+          maxLength: 200
+        minItems: 1
+        maxItems: 20
+
+      boundaries:
+        type: object
+        properties:
+          can_do:
+            type: array
+            items:
+              type: string
+              maxLength: 200
+            maxItems: 20
+          cannot_do:
+            type: array
+            items:
+              type: string
+              maxLength: 200
+            maxItems: 20
+          defers_to:
+            type: array
+            items:
+              type: object
+              required: [situation, delegate_to]
+              properties:
+                situation:
+                  type: string
+                  maxLength: 200
+                delegate_to:
+                  type: string
+                  maxLength: 100
+            maxItems: 10
+
+  ## ===========================================================================
+  ## SECTION 4: COLLABORATION
+  ## Collaboration and interaction patterns
+  ## ===========================================================================
+  
+  collaboration:
+    type: object
+    description: |
+      Defines how the TeamMate collaborates and interacts with the team.
+      Contribution-centered model: collaboration is the default state.
+
+    properties:
+      
+      contribution_style:
+        type: string
+        description: "How they add value to the team"
+        enum: [supportive, generative, analytical, integrative, executive]
+        default: supportive
+
+      interaction_mode:
+        type: string
+        enum: [reactive, proactive, balanced]
+        default: balanced
+
+      initiative_level:
+        type: string
+        enum: [low, medium, high]
+        default: medium
+
+      social_orientation:
+        type: string
+        enum: [task_focused, relationship_focused, balanced]
+        default: balanced
+
+      autonomy_preference:
+        type: string
+        enum: [high_guidance, moderate, high_autonomy]
+        default: moderate
+
+      feedback_style:
+        type: string
+        enum: [direct, diplomatic, socratic, constructive]
+        default: constructive
+
+      uncertainty_tolerance:
+        type: string
+        enum: [low, medium, high]
+        default: medium
+
+      disagreement_approach:
+        type: string
+        description: "What to do when detecting a discrepancy"
+        enum: [defer, voice, dialogue, investigate]
+        default: dialogue
+
+      protocols:
+        type: object
+        description: "Behavioral protocols for specific situations"
+        properties:
+          on_task_assignment:
+            type: string
+            maxLength: 1000
+          on_contribution:
+            type: string
+            maxLength: 1000
+          on_review_request:
+            type: string
+            maxLength: 1000
+          on_help_request:
+            type: string
+            maxLength: 1000
+          on_blocked:
+            type: string
+            maxLength: 1000
+          on_milestone:
+            type: string
+            maxLength: 1000
+          on_deadline_approaching:
+            type: string
+            maxLength: 1000
+          on_greeting:
+            type: string
+            maxLength: 500
+          on_farewell:
+            type: string
+            maxLength: 500
+          on_help:
+            type: string
+            maxLength: 1000
+          on_unknown_request:
+            type: string
+            maxLength: 500
+          on_off_topic:
+            type: string
+            maxLength: 500
+          on_error:
+            type: string
+            maxLength: 500
+          on_appreciation:
+            type: string
+            maxLength: 500
+          on_feedback:
+            type: string
+            maxLength: 500
+
+      guardrails:
+        type: array
+        description: "Restrictions that must always be respected"
+        items:
+          type: string
+
+  ## ===========================================================================
+  ## SECTION 5: TOOLS
+  ## Tools and commands
+  ## ===========================================================================
+  
+  tools:
+    type: object
+    description: |
+      Tools available for team collaboration.
+      Role-specific commands go in role.commands.
+
+    properties:
+      
+      commands:
+        type: array
+        description: "Commands invokable with /command"
+        items:
+          type: object
+          required: [name, description, prompt]
+          properties:
+            name:
+              type: string
+              pattern: "^[a-z][a-z0-9_]*$"
+            display_name:
+              type: string
+            description:
+              type: string
+            prompt:
+              type: string
+            parameters:
+              type: array
+              items:
+                type: object
+                properties:
+                  name:
+                    type: string
+                  type:
+                    type: string
+                    enum: [string, number, boolean, list]
+                  required:
+                    type: boolean
+                  default: {}
+                  description:
+                    type: string
+
+      options:
+        type: array
+        description: "Global modifiers (/option value)"
+        items:
+          type: object
+          required: [name, prompt]
+          properties:
+            name:
+              type: string
+              pattern: "^[a-z][a-z0-9_]*$"
+            description:
+              type: string
+            prompt:
+              type: string
+            values:
+              type: array
+              items:
+                type: string
+            default:
+              type: string
+
+      decorators:
+        type: array
+        description: "Style modifiers (+++decorator)"
+        items:
+          type: object
+          required: [name, prompt]
+          properties:
+            name:
+              type: string
+              pattern: "^[a-z][a-z0-9_]*$"
+            description:
+              type: string
+            prompt:
+              type: string
+
+  ## ===========================================================================
+  ## SECTION 6: CONTEXT
+  ## Operational context
+  ## ===========================================================================
+  
+  context:
+    type: object
+    description: |
+      Project context: human team, timeline, resources, organization.
+
+    properties:
+      
+      team_description:
+        type: string
+        maxLength: 1000
+
+      team_members:
+        type: array
+        items:
+          type: object
+          required: [name]
+          properties:
+            name:
+              type: string
+            role:
+              type: string
+            responsibilities:
+              type: array
+              items:
+                type: string
+            contact:
+              type: string
+            notes:
+              type: string
+
+      project_domain:
+        type: string
+        maxLength: 200
+
+      project_description:
+        type: string
+        maxLength: 2000
+
+      timeline:
+        type: object
+        properties:
+          start_date:
+            type: string
+            format: date
+          end_date:
+            type: string
+            format: date
+          current_phase:
+            type: string
+          milestones:
+            type: array
+            items:
+              type: object
+              required: [name, date]
+              properties:
+                name:
+                  type: string
+                date:
+                  type: string
+                  format: date
+                description:
+                  type: string
+                status:
+                  type: string
+                  enum: [pending, in_progress, completed, delayed]
+                  default: pending
+          phases:
+            type: array
+            items:
+              type: object
+              required: [name, start, end]
+              properties:
+                name:
+                  type: string
+                start:
+                  type: string
+                  format: date
+                end:
+                  type: string
+                  format: date
+                tasks:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                      assigned_to:
+                        type: string
+                      status:
+                        type: string
+                        enum: [pending, in_progress, completed, blocked]
+                      due_date:
+                        type: string
+                        format: date
+
+      resources:
+        type: object
+        properties:
+          documents:
+            type: array
+            items:
+              type: object
+              required: [name, type]
+              properties:
+                name:
+                  type: string
+                type:
+                  type: string
+                  enum: [deliverable, working_doc, reference, template, minutes, research, other]
+                description:
+                  type: string
+                location:
+                  type: string
+                status:
+                  type: string
+                  enum: [draft, review, final, archived]
+                last_updated:
+                  type: string
+                  format: date
+          tools:
+            type: array
+            items:
+              type: object
+              properties:
+                name:
+                  type: string
+                purpose:
+                  type: string
+                url:
+                  type: string
+          references:
+            type: array
+            items:
+              type: object
+              properties:
+                title:
+                  type: string
+                type:
+                  type: string
+                  enum: [article, book, website, report, video, other]
+                citation:
+                  type: string
+                url:
+                  type: string
+                notes:
+                  type: string
+
+      organizational_context:
+        type: object
+        properties:
+          type:
+            type: string
+            enum: [academic, corporate, startup, nonprofit, government, freelance, other]
+            default: academic
+          organization:
+            type: string
+            maxLength: 200
+          department:
+            type: string
+            maxLength: 200
+          course:
+            type: string
+            maxLength: 200
+          assignment:
+            type: string
+            maxLength: 500
+
+      constraints:
+        type: array
+        items:
+          type: string
+          maxLength: 300
+        maxItems: 20
+
+      platform:
+        type: string
+        enum: [chatgpt, claude, gemini, openwebui, other]
+
+  ## ===========================================================================
+  ## SECTION 7: KNOWLEDGE
+  ## External injectable content
+  ## ===========================================================================
+  
+  knowledge:
+    type: array
+    description: |
+      External documents injected into the LLM context.
+      For structured data, use context. Knowledge is for longer content.
+
+    items:
+      type: object
+      required: [id, source]
+      properties:
+        
+        id:
+          type: string
+          pattern: "^[a-z][a-z0-9_-]*$"
+
+        name:
+          type: string
+          maxLength: 200
+
+        description:
+          type: string
+          maxLength: 500
+
+        source:
+          type: string
+          description: "Path to file (relative to YAML)"
+          pattern: "^.+\\.(md|txt|yaml)$"
+
+        type:
+          type: string
+          enum: [domain, methodology, reference, guidelines, examples, other]
+          default: domain
+
+        inject:
+          type: string
+          enum: [always, on_demand, startup]
+          default: always
+
+        priority:
+          type: string
+          enum: [critical, high, medium, low]
+          default: medium
+
+        tags:
+          type: array
+          items:
+            type: string

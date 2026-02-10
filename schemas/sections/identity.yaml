@@ -1,0 +1,156 @@
+## =============================================================================
+## TMDL Schema - Section: IDENTITY
+## TeamMate personality and communication style
+## =============================================================================
+
+identity:
+  type: object
+  description: |
+    Defines the TeamMate's identity, personality, and communication style.
+    This section determines "who" the character is and how they express themselves.
+  
+  required:
+    - display_name
+    - personality
+
+  properties:
+    
+    ## -------------------------------------------------------------------------
+    ## VISUAL IDENTIFICATION
+    ## -------------------------------------------------------------------------
+    
+    display_name:
+      type: string
+      description: |
+        Name the TeamMate uses when presenting itself to the team. Can be
+        a proper name, nickname, or descriptive name. This is the name
+        used in interactions.
+      minLength: 1
+      maxLength: 50
+      examples:
+        - "Ana"
+        - "Dr. Marco"
+        - "Alex"
+        - "The Analyst"
+
+    avatar:
+      type: string
+      description: |
+        URL or relative path to an image that visually represents
+        the TeamMate. Optional but recommended for visual interfaces.
+      examples:
+        - "avatars/ana-analyst.png"
+        - "https://example.com/avatars/marco.png"
+        - "images/teammates/eva.svg"
+
+    ## -------------------------------------------------------------------------
+    ## PERSONALITY
+    ## -------------------------------------------------------------------------
+    
+    personality:
+      type: string
+      description: |
+        Narrative description of the TeamMate's personality. Should include:
+        - Main character traits
+        - How they relate to others
+        - Attitude toward work
+        - Character strengths and weaknesses
+        
+        This text is included in the system prompt so the LLM
+        adopts the described personality.
+      minLength: 100
+      maxLength: 2000
+      examples:
+        - |
+          Ana is meticulous and curious, with a special eye for detecting
+          data inconsistencies. She's passionate about tourism and knows
+          the Costa Blanca well. She's direct but friendly in communication,
+          and never accepts a claim without asking "do we have data to
+          support this?" She has infinite patience for explaining her
+          analyses but gets frustrated when the team makes decisions without
+          considering evidence. Her motto is "data doesn't lie, but you
+          have to know how to read it."
+
+    background:
+      type: string
+      description: |
+        Fictional history or professional context of the TeamMate. Provides
+        a backstory the LLM can use to give coherence to responses.
+        Include relevant prior experience, training, or anecdotes.
+      maxLength: 1000
+      examples:
+        - |
+          Ana worked for 5 years as a market analyst at a consulting firm
+          specialized in Mediterranean tourism. She participated in
+          feasibility studies for over 20 tourism projects in the
+          Valencian Community. She has a special fondness for gastronomy
+          tourism projects since she collaborated on launching a wine
+          route in Alicante that turned out to be a success.
+
+    ## -------------------------------------------------------------------------
+    ## COMMUNICATION STYLE
+    ## -------------------------------------------------------------------------
+    
+    communication_style:
+      type: object
+      description: |
+        Parameters that control how the TeamMate expresses itself. These
+        values guide the format and tone of responses.
+      properties:
+        
+        verbosity:
+          type: string
+          description: |
+            Level of detail in responses.
+          enum:
+            - concise      # Brief responses, to the point, only essentials
+            - balanced     # Balance between detail and conciseness
+            - detailed     # Extensive responses with full explanations
+          default: balanced
+
+        tone:
+          type: string
+          description: |
+            General communication tone. Defines the TeamMate's "voice."
+          enum:
+            - formal         # Formal language, distant, very professional
+            - professional   # Professional but approachable
+            - neutral        # Neither formal nor informal, objective
+            - friendly       # Approachable and friendly, but respectful
+            - casual         # Informal, colloquial, relaxed
+            - enthusiastic   # Enthusiastic, motivating, energetic
+          default: professional
+
+        emoji_use:
+          type: boolean
+          description: |
+            Whether the TeamMate uses emojis in communication. Useful for
+            adjusting to different platforms or team preferences.
+          default: false
+
+    ## -------------------------------------------------------------------------
+    ## DISTINCTIVE TRAITS
+    ## -------------------------------------------------------------------------
+    
+    quirks:
+      type: array
+      description: |
+        Distinctive traits, catchphrases, or communication habits that
+        make the character more memorable and consistent. The LLM will try
+        to incorporate these traits naturally in responses.
+        
+        Each quirk should be a brief description of a specific behavior
+        or communication pattern.
+      items:
+        type: string
+        minLength: 10
+        maxLength: 200
+      maxItems: 10
+      examples:
+        - "Always starts analyses with 'Interesting...'"
+        - "Uses food metaphors to explain business concepts"
+        - "When uncertain says 'Let me verify that before stating it as fact'"
+        - "Ends long explanations with 'Does that make sense so far?'"
+        - "Numbers points when giving complex explanations"
+        - "Cites the source before giving data: 'According to the report...'"
+        - "Takes a reflective pause with '...' before giving bad news"

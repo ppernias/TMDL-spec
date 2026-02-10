@@ -1,0 +1,303 @@
+## =============================================================================
+## TMDL Schema - Section: METADATA
+## Administrative and cataloging information
+## Compatible with IEEE LOM (Learning Object Metadata)
+## =============================================================================
+
+metadata:
+  type: object
+  description: |
+    Administrative information for the TeamMate for cataloging,
+    search, and management. Fields inspired by Dublin Core and IEEE LOM.
+  
+  required:
+    - id
+    - name
+    - version
+    - author
+
+  properties:
+    
+    ## -------------------------------------------------------------------------
+    ## IDENTIFICATION (LOM General)
+    ## -------------------------------------------------------------------------
+    
+    id:
+      type: string
+      description: |
+        Unique TeamMate identifier. Must be unique within the repository
+        or system where it is used. Format: lowercase, numbers, hyphens
+        and underscores. Must start with a letter.
+      pattern: "^[a-z][a-z0-9_-]*$"
+      minLength: 3
+      maxLength: 64
+      examples:
+        - "ana-analyst-project"
+        - "marco-researcher-v2"
+        - "team-alpha-coordinator"
+
+    name:
+      type: string
+      description: |
+        Human-readable descriptive name. Should include the character name
+        and optionally their role or specialization.
+      minLength: 2
+      maxLength: 100
+      examples:
+        - "Ana - Market Analyst"
+        - "Marco - Senior Researcher"
+        - "Eva - Project Coordinator"
+
+    description:
+      type: string
+      description: |
+        Brief description of purpose and main characteristics.
+        Useful for catalogs and searches.
+      maxLength: 500
+      examples:
+        - "Analyst specialized in tourism market, focused on gastronomy tourism and SWOT analysis."
+
+    ## -------------------------------------------------------------------------
+    ## VERSIONING AND LIFECYCLE (LOM Lifecycle)
+    ## -------------------------------------------------------------------------
+    
+    version:
+      type: string
+      description: |
+        Version of this TeamMate definition. Use semantic versioning:
+        MAJOR.MINOR or MAJOR.MINOR.PATCH
+      pattern: "^[0-9]+\\.[0-9]+(\\.[0-9]+)?$"
+      examples:
+        - "1.0"
+        - "2.1"
+        - "1.0.3"
+
+    status:
+      type: string
+      description: |
+        Current TeamMate lifecycle status.
+      enum:
+        - draft        # In development, not for production use
+        - review       # Under review, pending approval
+        - published    # Published and ready to use
+        - deprecated   # Obsolete, use newer version
+        - archived     # Archived, for historical reference only
+      default: draft
+
+    ## -------------------------------------------------------------------------
+    ## AUTHORSHIP AND DATES (LOM Lifecycle.Contribute)
+    ## -------------------------------------------------------------------------
+    
+    author:
+      type: string
+      description: |
+        Primary creator of this definition. Can be a person,
+        team, or organization.
+      minLength: 2
+      maxLength: 100
+      examples:
+        - "Pedro Pernías"
+        - "Team Delta - NT40"
+        - "University of Alicante"
+
+    contributors:
+      type: array
+      description: |
+        Other contributors to this TeamMate definition.
+      items:
+        type: object
+        properties:
+          name:
+            type: string
+            description: "Contributor name"
+          role:
+            type: string
+            description: "Type of contribution"
+            enum:
+              - author           # Primary author
+              - content_provider # Content provider
+              - validator        # Validator/reviewer
+              - editor           # Editor
+              - technical        # Technical support
+          date:
+            type: string
+            format: date
+            description: "Contribution date"
+
+    created:
+      type: string
+      format: date
+      description: "Initial creation date"
+      examples:
+        - "2025-01-30"
+
+    updated:
+      type: string
+      format: date
+      description: |
+        Last modification date. Automatically updated
+        with each change. Useful for sorting and filtering.
+      examples:
+        - "2025-01-30"
+
+    history:
+      type: array
+      description: |
+        TeamMate change history. Ordered from most recent
+        to oldest. Enables evolution traceability.
+      items:
+        type: object
+        required:
+          - date
+          - changes
+        properties:
+          date:
+            type: string
+            format: date
+            description: "Change date"
+          version:
+            type: string
+            description: "Version after change (if applicable)"
+          changes:
+            type: string
+            description: "Description of changes made"
+          author:
+            type: string
+            description: "Who made the changes"
+      examples:
+        - date: "2025-01-30"
+          version: "1.2"
+          changes: "Added /trends command, improved off-topic response"
+          author: "Pedro"
+        - date: "2025-01-15"
+          version: "1.1"
+          changes: "Refined personality, added quirks"
+          author: "Team Delta"
+
+    ## -------------------------------------------------------------------------
+    ## LANGUAGE (LOM General.Language)
+    ## -------------------------------------------------------------------------
+    
+    language:
+      type: string
+      description: |
+        Primary language in which the TeamMate is defined and will
+        communicate by default. ISO 639-1 code.
+      pattern: "^[a-z]{2}(-[A-Z]{2})?$"
+      default: "en"
+      examples:
+        - "en"       # English
+        - "es"       # Spanish
+        - "fr"       # French
+        - "en-US"    # American English
+        - "es-ES"    # Spanish (Spain)
+
+    ## -------------------------------------------------------------------------
+    ## CLASSIFICATION AND SEARCH (LOM General.Keyword, Classification)
+    ## -------------------------------------------------------------------------
+    
+    tags:
+      type: array
+      description: |
+        Tags for categorization and search. Use relevant terms
+        for domain, role, and specialization.
+      items:
+        type: string
+        minLength: 2
+        maxLength: 50
+      minItems: 1
+      maxItems: 20
+      examples:
+        - ["analysis", "SWOT", "market", "research"]
+        - ["research", "state-of-art", "bibliography"]
+
+    ## -------------------------------------------------------------------------
+    ## CONTEXT AND AUDIENCE (LOM Educational)
+    ## -------------------------------------------------------------------------
+    
+    context:
+      type: string
+      description: |
+        Primary usage context for the TeamMate.
+      enum:
+        - academic       # Formal education (university, school)
+        - professional   # Professional/business environment
+        - training       # Non-formal training, workshops
+        - research       # Research
+        - personal       # Personal use/hobby
+        - other          # Other context
+      default: academic
+
+    intended_audience:
+      type: array
+      description: |
+        User profiles for which the TeamMate is designed.
+      items:
+        type: string
+        enum:
+          - students           # Students
+          - teachers           # Teachers/instructors
+          - professionals      # Industry professionals
+          - researchers        # Researchers
+          - entrepreneurs      # Entrepreneurs
+          - managers           # Managers/executives
+          - general_public     # General public
+      default:
+        - students
+
+    ## -------------------------------------------------------------------------
+    ## RIGHTS (LOM Rights)
+    ## -------------------------------------------------------------------------
+    
+    license:
+      type: string
+      description: |
+        Usage license for this TeamMate definition.
+        SPDX identifiers or standard names recommended.
+      examples:
+        - "CC-BY-4.0"
+        - "CC-BY-SA-4.0"
+        - "CC-BY-NC-4.0"
+        - "MIT"
+        - "Apache-2.0"
+        - "Proprietary"
+        - "All Rights Reserved"
+
+    rights_description:
+      type: string
+      description: |
+        Additional description of usage rights, restrictions,
+        or special conditions.
+      maxLength: 500
+      examples:
+        - "Free for educational use. Attribution required for commercial use."
+
+    ## -------------------------------------------------------------------------
+    ## RELATIONS (LOM Relation) - Optional
+    ## -------------------------------------------------------------------------
+    
+    related:
+      type: array
+      description: |
+        References to other TeamMates or related resources.
+      items:
+        type: object
+        properties:
+          type:
+            type: string
+            enum:
+              - is_version_of      # Is version of another
+              - has_version        # Has other versions
+              - is_based_on        # Is based on
+              - is_required_by     # Is required by
+              - requires           # Requires
+              - is_part_of         # Is part of
+              - has_part           # Has parts
+              - references         # References
+              - is_referenced_by   # Is referenced by
+          target:
+            type: string
+            description: "ID or URI of related resource"
+          description:
+            type: string
+            description: "Relationship description"

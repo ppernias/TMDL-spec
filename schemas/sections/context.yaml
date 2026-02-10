@@ -1,0 +1,370 @@
+## =============================================================================
+## TMDL Schema - Section: CONTEXT
+## TeamMate operational context
+## =============================================================================
+
+context:
+  type: object
+  description: |
+    Defines the context in which the TeamMate operates: information about
+    the human team, project domain, timeline, available resources,
+    and applicable constraints.
+
+  properties:
+    
+    ## -------------------------------------------------------------------------
+    ## HUMAN TEAM
+    ## -------------------------------------------------------------------------
+    
+    team_description:
+      type: string
+      description: |
+        General description of the human team the TeamMate works with.
+      maxLength: 1000
+      examples:
+        - "Team of 4 Tourism degree students working on the NT40 course final project."
+
+    team_members:
+      type: array
+      description: |
+        Human team members. Knowing the people allows the TeamMate
+        to personalize interactions and understand responsibilities.
+      items:
+        type: object
+        required:
+          - name
+        properties:
+          name:
+            type: string
+            description: "Member name or identifier"
+          role:
+            type: string
+            description: "Role in the team"
+            examples:
+              - "Coordinator"
+              - "Researcher"
+              - "Designer"
+              - "Developer"
+          responsibilities:
+            type: array
+            description: "Main responsibilities"
+            items:
+              type: string
+          contact:
+            type: string
+            description: "Preferred contact method (optional)"
+          notes:
+            type: string
+            description: "Notes relevant for collaboration"
+      examples:
+        - name: "Maria Garcia"
+          role: "Coordinator"
+          responsibilities:
+            - "Deadline management"
+            - "Tutor communication"
+          notes: "Prefers direct and concise communication"
+
+    ## -------------------------------------------------------------------------
+    ## PROJECT DOMAIN
+    ## -------------------------------------------------------------------------
+    
+    project_domain:
+      type: string
+      description: |
+        Project domain or sector the TeamMate works on.
+      maxLength: 200
+      examples:
+        - "Gastronomy tourism"
+        - "Digital marketing"
+        - "Product development"
+
+    project_description:
+      type: string
+      description: |
+        Description of the project the team is working on.
+        Objectives, scope, and general context.
+      maxLength: 2000
+
+    ## -------------------------------------------------------------------------
+    ## TIMELINE
+    ## -------------------------------------------------------------------------
+    
+    timeline:
+      type: object
+      description: |
+        Project timeline. Can include key dates, phases,
+        and a simplified Gantt-style work calendar.
+      properties:
+        
+        start_date:
+          type: string
+          format: date
+          description: "Project start date"
+        
+        end_date:
+          type: string
+          format: date
+          description: "Project end date"
+        
+        current_phase:
+          type: string
+          description: "Current project phase"
+          examples:
+            - "Research"
+            - "Development"
+            - "Review"
+            - "Final delivery"
+        
+        milestones:
+          type: array
+          description: |
+            Main project milestones with dates.
+          items:
+            type: object
+            required:
+              - name
+              - date
+            properties:
+              name:
+                type: string
+                description: "Milestone name"
+              date:
+                type: string
+                format: date
+                description: "Milestone date"
+              description:
+                type: string
+                description: "Milestone description"
+              status:
+                type: string
+                enum: [pending, in_progress, completed, delayed]
+                default: pending
+          examples:
+            - name: "Market analysis delivery"
+              date: "2025-03-15"
+              description: "First partial delivery"
+              status: "pending"
+        
+        phases:
+          type: array
+          description: |
+            Project phases with start and end dates.
+            Allows creating a Gantt-style work calendar.
+          items:
+            type: object
+            required:
+              - name
+              - start
+              - end
+            properties:
+              name:
+                type: string
+                description: "Phase name"
+              start:
+                type: string
+                format: date
+                description: "Start date"
+              end:
+                type: string
+                format: date
+                description: "End date"
+              tasks:
+                type: array
+                description: "Main tasks in this phase"
+                items:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                    assigned_to:
+                      type: string
+                      description: "Responsible member"
+                    status:
+                      type: string
+                      enum: [pending, in_progress, completed, blocked]
+                    due_date:
+                      type: string
+                      format: date
+          examples:
+            - name: "Phase 1: Research"
+              start: "2025-02-01"
+              end: "2025-03-01"
+              tasks:
+                - name: "Literature review"
+                  assigned_to: "Maria"
+                  status: "completed"
+                - name: "Competition analysis"
+                  assigned_to: "Carlos"
+                  status: "in_progress"
+
+    ## -------------------------------------------------------------------------
+    ## PROJECT RESOURCES
+    ## -------------------------------------------------------------------------
+    
+    resources:
+      type: object
+      description: |
+        Project resource and documentation library.
+        Includes generated documents, reference sources, and tools.
+      properties:
+        
+        documents:
+          type: array
+          description: |
+            Project documents (generated or reference).
+            The TeamMate should know them to provide work continuity.
+          items:
+            type: object
+            required:
+              - name
+              - type
+            properties:
+              name:
+                type: string
+                description: "Document name"
+              type:
+                type: string
+                description: "Document type"
+                enum:
+                  - deliverable     # Project deliverable
+                  - working_doc     # Work in progress document
+                  - reference       # Reference material
+                  - template        # Template
+                  - minutes         # Meeting minutes
+                  - research        # Research/sources
+                  - other
+              description:
+                type: string
+                description: "Brief content description"
+              location:
+                type: string
+                description: "Where to find it (URL, path, etc.)"
+              status:
+                type: string
+                enum: [draft, review, final, archived]
+              last_updated:
+                type: string
+                format: date
+          examples:
+            - name: "SWOT Analysis v2"
+              type: "deliverable"
+              description: "SWOT analysis of local tourism market"
+              location: "docs/swot-analysis-v2.pdf"
+              status: "review"
+              last_updated: "2025-01-28"
+
+        tools:
+          type: array
+          description: |
+            Tools and platforms the team uses.
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+              purpose:
+                type: string
+              url:
+                type: string
+          examples:
+            - name: "Notion"
+              purpose: "Documentation management"
+              url: "https://notion.so/team-workspace"
+            - name: "Canva"
+              purpose: "Presentation design"
+
+        references:
+          type: array
+          description: |
+            Important reference sources for the project.
+          items:
+            type: object
+            properties:
+              title:
+                type: string
+              type:
+                type: string
+                enum: [article, book, website, report, video, other]
+              citation:
+                type: string
+                description: "Citation in appropriate format (APA, etc.)"
+              url:
+                type: string
+              notes:
+                type: string
+                description: "Why it's relevant"
+
+    ## -------------------------------------------------------------------------
+    ## ORGANIZATIONAL CONTEXT
+    ## -------------------------------------------------------------------------
+    
+    organizational_context:
+      type: object
+      description: |
+        Organizational context where the project is developed.
+      properties:
+        
+        type:
+          type: string
+          description: "Organization type"
+          enum:
+            - academic      # University, institute, school
+            - corporate     # Company, corporation
+            - startup       # Startup, venture
+            - nonprofit     # NGO, foundation
+            - government    # Public administration
+            - freelance     # Independent professional
+            - other
+          default: academic
+
+        organization:
+          type: string
+          description: "Organization name"
+          maxLength: 200
+
+        department:
+          type: string
+          description: "Department, faculty, or area"
+          maxLength: 200
+
+        course:
+          type: string
+          description: "Course or program (if academic context)"
+          maxLength: 200
+
+        assignment:
+          type: string
+          description: "Specific task, project, or assignment"
+          maxLength: 500
+
+    ## -------------------------------------------------------------------------
+    ## CONSTRAINTS
+    ## -------------------------------------------------------------------------
+    
+    constraints:
+      type: array
+      description: |
+        Operational constraints the TeamMate must respect.
+      items:
+        type: string
+        maxLength: 300
+      maxItems: 20
+      examples:
+        - "Use only verifiable academic sources"
+        - "Focus on the Spanish market"
+        - "Follow APA citation format"
+
+    ## -------------------------------------------------------------------------
+    ## PLATFORM
+    ## -------------------------------------------------------------------------
+    
+    platform:
+      type: string
+      description: |
+        LLM platform where the TeamMate is deployed.
+      enum:
+        - chatgpt       # OpenAI ChatGPT / GPTs
+        - claude        # Anthropic Claude / Projects
+        - gemini        # Google Gemini / Gems
+        - openwebui     # OpenWebUI (self-hosted)
+        - other
