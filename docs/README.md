@@ -4,7 +4,7 @@
 
 ## Abstract
 
-TMDL (TeamMate Description Language) is a YAML-based specification language for defining virtual teammates powered by LLMs that collaborate effectively with human teams. Building on the ADL (Assistant Description Language) framework, TMDL introduces contribution-centered design principles and structured collaboration protocols, enabling the creation of AI agents that integrate naturally into team workflows.
+The integration of Large Language Models (LLMs) into collaborative work environments presents a fundamental design choice: should AI function as a *tool* for ad-hoc queries or as a *teammate* with defined identity and role? This paper introduces TMDL (TeamMate Description Language), a YAML-based specification language for describing virtual TeamMates in hybrid human-AI teams. Building on ADL (Assistant Description Language), the "machines as teammates" research agenda, and organizational behavior research on team effectiveness, TMDL provides structured specifications for identity, role, collaboration patterns, and project knowledge. Key contributions include: (1) a contribution-centered collaboration model that frames AI TeamMates around how they add value to the group; (2) taxonomies for contribution styles and cognitive patterns derived from established team composition research; and (3) explicit boundary specifications that position AI as a configured partner operating under human direction. We derive six research hypotheses comparing the teammate paradigm against tool-based AI use and propose a quasi-experimental validation approach. The specification is released as open-source at https://github.com/ppernias/TMDL-spec.
 
 ## Paper
 
