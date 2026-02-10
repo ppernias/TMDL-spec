@@ -1,6 +1,6 @@
 # TMDL: A Formal Language for Describing AI Team Members
 
-**Working paper** (not yet peer-reviewed)
+**Status:** Working paper (not yet peer-reviewed)
 
 ## Abstract
 
@@ -8,16 +8,17 @@ The integration of Large Language Models (LLMs) into collaborative work environm
 
 ## Paper
 
-📄 [TMDL_Paper.pdf](TMDL_Paper.pdf)
+📄 [__TMDL_Paper.pdf__](TMDL_Paper.pdf) - Full paper
 
 ## Citation
 
 ```bibtex
-@inproceedings{pernias2025tmdl,
+@misc{pernias2025tmdl,
   title={TMDL: A Description Language for Virtual Teammates in Hybrid Human-AI Teams},
-  author={Pernías Peco, Pedro A. and Escobar Esteban, M. Pilar},
-  booktitle={Proceedings of [Conference]},
-  year={2025}
+  author={Pernías Peco, Pedro A. and Escobar Esteban, María P.},
+  year={2025},
+  url={https://github.com/ppernias/TMDL-spec},
+  note={Working paper. Specification and tools available at GitHub repository}
 }
 ```
 
