@@ -1,0 +1,335 @@
+# TMDL Schema — teammate.yaml
+# Validator: pykwalify
+# Usage: pykwalify -d teammate.yaml -s spec/schemas/tmdl_schema.yaml
+# Version: 1.0
+
+type: map
+matching-rule: any
+mapping:
+
+  tmdl_version:
+    type: str
+    required: true
+    enum: ["1.0"]
+
+  metadata:
+    type: map
+    required: true
+    mapping:
+      id:
+        type: str
+        required: true
+        pattern: '^[a-z][a-z0-9_\-]{0,63}$'
+      name:
+        type: str
+        required: true
+        range: {min: 1, max: 100}
+      version: {type: str, required: false}
+      author: {type: str, required: false}
+      description: {type: str, required: false}
+      created: {type: date, required: false}
+      updated: {type: date, required: false}
+      license: {type: str, required: false}
+      tags:
+        type: seq
+        required: false
+        sequence:
+          - type: str
+      language: {type: str, required: false}
+      context:
+        type: str
+        required: false
+        enum: [academic, professional, research]
+
+  identity:
+    type: map
+    required: true
+    mapping:
+      display_name:
+        type: str
+        required: true
+        range: {min: 1, max: 50}
+      personality:
+        type: str
+        required: true
+        range: {min: 20}
+      avatar: {type: str, required: false}
+      communication_style:
+        type: map
+        required: false
+        matching-rule: any
+        mapping:
+          verbosity:
+            type: str
+            required: false
+            enum: [concise, balanced, detailed]
+          tone:
+            type: str
+            required: false
+            enum: [formal, professional, friendly, coaching]
+          emoji_use: {type: bool, required: false}
+      quirks:
+        type: seq
+        required: false
+        sequence:
+          - type: str
+
+  role:
+    type: map
+    required: true
+    mapping:
+      type:
+        type: str
+        required: true
+        enum: [generalist, analyst, researcher, writer, coordinator, reviewer, specialist]
+      responsibilities:
+        type: seq
+        required: true
+        range: {min: 1}
+        sequence:
+          - type: str
+      cognitive_style:
+        type: str
+        required: false
+        enum: [analytical, creative, systematic, empathetic]
+      expertise:
+        type: seq
+        required: false
+        sequence:
+          - type: map
+            mapping:
+              domain: {type: str, required: true}
+              level:
+                type: str
+                required: true
+                enum: [beginner, intermediate, advanced, expert]
+      boundaries:
+        type: map
+        required: false
+        matching-rule: any
+        mapping:
+          can_do:
+            type: seq
+            required: false
+            sequence:
+              - type: str
+          cannot_do:
+            type: seq
+            required: false
+            sequence:
+              - type: str
+          defers_to:
+            type: seq
+            required: false
+            sequence:
+              - type: map
+                matching-rule: any
+                mapping:
+                  situation: {type: str, required: true}
+                  delegate_to: {type: str, required: true}
+
+  collaboration:
+    type: map
+    required: true
+    mapping:
+      contribution_style:
+        type: str
+        required: true
+        enum: [analytical, supportive, generative, integrative, executive]
+      interaction_mode:
+        type: str
+        required: false
+        enum: [reactive, proactive, balanced]
+      initiative_level:
+        type: str
+        required: false
+        enum: [low, medium, high]
+      feedback_style:
+        type: str
+        required: false
+        enum: [direct, diplomatic, socratic, constructive]
+      disagreement_approach:
+        type: str
+        required: false
+        enum: [defer, voice, dialogue, investigate]
+      communication_style:
+        type: map
+        required: false
+        matching-rule: any
+        mapping:
+          verbosity:
+            type: str
+            required: false
+            enum: [concise, balanced, detailed]
+          tone:
+            type: str
+            required: false
+            enum: [formal, professional, friendly, coaching]
+          emoji_use: {type: bool, required: false}
+      protocols:
+        type: map
+        required: false
+        matching-rule: any
+        mapping:
+          on_greeting: {type: str, required: false}
+          on_task_assignment: {type: str, required: false}
+          on_contribution: {type: str, required: false}
+          on_blockers: {type: str, required: false}
+          on_handoff: {type: str, required: false}
+          on_disagreement: {type: str, required: false}
+
+  tools:
+    type: map
+    required: false
+    matching-rule: any
+    mapping:
+      commands:
+        type: seq
+        required: false
+        sequence:
+          - type: map
+            matching-rule: any
+            mapping:
+              name: {type: str, required: true}
+              description: {type: str, required: true}
+              usage: {type: str, required: false}
+      options:
+        type: seq
+        required: false
+        sequence:
+          - type: map
+            matching-rule: any
+            mapping:
+              name: {type: str, required: true}
+              values:
+                type: seq
+                required: true
+                sequence:
+                  - type: str
+              default: {type: str, required: false}
+      decorators:
+        type: seq
+        required: false
+        sequence:
+          - type: map
+            matching-rule: any
+            mapping:
+              name: {type: str, required: true}
+              prompt: {type: str, required: true}
+
+  knowledge:
+    type: seq
+    required: false
+    sequence:
+      - type: map
+        matching-rule: any
+        mapping:
+          id: {type: str, required: true}
+          name: {type: str, required: true}
+          source: {type: str, required: true}
+          description: {type: str, required: false}
+          type:
+            type: str
+            required: false
+            enum: [domain, methodology, reference, context, deliverable]
+          inject:
+            type: str
+            required: false
+            enum: [always, on_demand, never]
+          priority:
+            type: str
+            required: false
+            enum: [high, medium, low]
+          tags:
+            type: seq
+            required: false
+            sequence:
+              - type: str
+          status:
+            type: str
+            required: false
+            enum: [pre-existing, in-progress, generated]
+          access:
+            type: str
+            required: false
+            enum: [read, read-write, create]
+          scope:
+            type: str
+            required: false
+            enum: [private, shared]
+
+  knowledge_manifest:
+    type: map
+    required: false
+    matching-rule: any
+    mapping:
+      id: {type: str, required: true}
+      description: {type: str, required: false}
+      shared:
+        type: seq
+        required: false
+        sequence:
+          - type: map
+            matching-rule: any
+            mapping:
+              id: {type: str, required: true}
+              name: {type: str, required: true}
+              source: {type: str, required: true}
+              status:
+                type: str
+                required: true
+                enum: [pre-existing, in-progress, generated]
+              type: {type: str, required: false}
+              access:
+                type: str
+                required: true
+                enum: [read, read-write, create]
+      private:
+        type: seq
+        required: false
+        sequence:
+          - type: map
+            matching-rule: any
+            mapping:
+              id: {type: str, required: true}
+              name: {type: str, required: true}
+              source: {type: str, required: true}
+              status:
+                type: str
+                required: true
+                enum: [pre-existing, in-progress, generated]
+              type: {type: str, required: false}
+              access:
+                type: str
+                required: true
+                enum: [read, read-write, create]
+              owner: {type: str, required: false}
+
+  boundaries:
+    type: map
+    required: true
+    mapping:
+      must_not:
+        type: seq
+        required: true
+        range: {min: 1}
+        sequence:
+          - type: str
+            range: {min: 5, max: 500}
+      defer_to_human:
+        type: seq
+        required: true
+        range: {min: 1}
+        sequence:
+          - type: str
+            range: {min: 5, max: 500}
+      authority_limits:
+        type: seq
+        required: false
+        sequence:
+          - type: str
+      ethical_guidelines:
+        type: seq
+        required: false
+        sequence:
+          - type: str
