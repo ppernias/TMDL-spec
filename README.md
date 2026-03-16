@@ -1,4 +1,4 @@
-# TMDL — TeamMate Description Language
+# TMDL â TeamMate Description Language
 
 **TMDL** is a YAML-based specification language for defining virtual teammates powered by LLMs that collaborate effectively with human teams.
 
@@ -10,11 +10,11 @@ TMDL is a **Level 2 Managed Knowledge Entity** within the ADL family: it extends
 
 | Language | Level | What it describes |
 |----------|-------|-------------------|
-| **ADL 2.0** | Level 1 — AssistantSpec | A single assistant entity |
-| **TMDL** | Level 2 — Managed Knowledge Entity | A teammate with evolving knowledge |
-| **TDL** | Level 3 — SystemSpec | A complete multi-component tutoring system |
+| **ADL 2.0** | Level 1 â AssistantSpec | A single assistant entity |
+| **TMDL** | Level 2 â Managed Knowledge Entity | A teammate with evolving knowledge |
+| **TDL** | Level 3 â SystemSpec | A complete multi-component tutoring system |
 
-TMDL is Level 2 because teammates work with knowledge that has a lifecycle — not static references. Knowledge existed before configuration, changes during work, may be shared between teammates, and requires independent runtime management.
+TMDL is Level 2 because teammates work with knowledge that has a lifecycle â not static references. Knowledge existed before configuration, changes during work, may be shared between teammates, and requires independent runtime management.
 
 ---
 
@@ -100,11 +100,11 @@ collaboration:
 
 boundaries:
   must_not:
-    - "Fabricate citations or experimental results"
-    - "Submit content without explicit instruction"
+    - "Provide harmful or misleading information"
+    - "Act autonomously on irreversible actions"
   defer_to_human:
-    - "Final decisions on paper content and framing"
-    - "Authorship and publication decisions"
+    - "Final decisions on team direction and strategy"
+    - "Decisions with external consequences"
 ```
 
 ---
@@ -113,17 +113,17 @@ boundaries:
 
 ```bash
 pip install pykwalify pyyaml
-pykwalify -d marco.yaml -s spec/schemas/tmdl_schema.yaml
+pykwalify -d my_teammate.yaml -s spec/schemas/tmdl_schema.yaml
 ```
 
 ---
 
 ## Documentation
 
-- [Technical Reference](docs/TMDL_technical_reference.md) — complete spec, schemas, examples
-- [ADL Family](docs/ADL_FAMILY.md) — relationship between ADL 2.0, TMDL, and TDL
-- [ADL2-spec](https://github.com/ppernias/ADL2-spec) — Level 1 foundation
-- [tdl-spec](https://github.com/ppernias/tdl-spec) — Level 3 SystemSpec
+- [Technical Reference](docs/TMDL_technical_reference.md) â complete spec, schemas, examples
+- [ADL Family](docs/ADL_FAMILY.md) â relationship between ADL 2.0, TMDL, and TDL
+- [ADL2-spec](https://github.com/ppernias/ADL2-spec) â Level 1 foundation
+- [tdl-spec](https://github.com/ppernias/tdl-spec) â Level 3 SystemSpec
 
 ---
 
@@ -136,7 +136,7 @@ CC-BY-4.0
 ```
 @misc{pernias2026tmdl,
   title={TMDL: A Description Language for Virtual TeamMates in Hybrid Human-AI Teams},
-  author={Pernías Peco, Pedro A. and Escobar Esteban, M. Pilar},
+  author={PernÃ­as Peco, Pedro A. and Escobar Esteban, M. Pilar},
   year={2026},
   url={https://github.com/ppernias/TMDL-spec}
 }
