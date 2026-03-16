@@ -23,3 +23,8 @@ Thumbs.db
 # Build
 build/
 dist/
+# Internal AI tool files — local only, never push
+CLAUDE.md
+ai_tools/
+**/adl_knowledge_for_marco.md
+**/*_knowledge_for_*.md
